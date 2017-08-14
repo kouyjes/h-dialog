@@ -1,0 +1,33 @@
+{
+  "name": "h-dialog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c && uglifyjs dest/js/dialog.js > dest/js/dialog.min.js",
+    "build-css": "scss src/themes/dialog.scss > dest/css/dialog.css && uglifycss dest/css/dialog.css > dest/css/dialog.min.css",
+    "copy-files":"copyfiles icons/*.svg dest/css",
+    "build-all": "npm run build && npm run build-css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "copyfiles": "^1.2.0",
+    "rollup": "^0.36.3",
+    "rollup-plugin-scss": "^0.1.0",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-uglify": "^1.0.1",
+    "ruby": "^0.6.1",
+    "scss": "^0.2.4",
+    "uglifycss": "0.0.27"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kouyjes/h-dialog.git"
+  },
+  "author": "kouyjes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kouyjes/h-dialog/issues"
+  },
+  "homepage": "https://github.com/kouyjes/h-dialog#readme"
+}

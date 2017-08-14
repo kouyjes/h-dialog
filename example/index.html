@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dialog Demo</title>
+    <link rel="stylesheet" href="../dest/css/dialog.css"/>
+    <script src="../dest/js/dialog.js"></script>
+    <script>
+        var index = 1;
+        function showDialog(){
+            var Dialog = HERE.UI.InfoDialog;
+            Dialog.show({
+                parent:document.body,
+                content:'success ok' + index++,
+                autoRemove:true,
+                autoRemoveTime:Math.random() * 15000
+            });
+        }
+    </script>
+</head>
+<body>
+    <button onclick="showDialog()">show InfoDialog</button>
+</body>
+</html>
