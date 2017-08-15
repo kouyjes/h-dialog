@@ -7,7 +7,7 @@
     "build": "rollup -c && uglifyjs dest/js/dialog.js > dest/js/dialog.min.js",
     "build-css": "scss src/themes/dialog.scss > dest/css/dialog.css && uglifycss dest/css/dialog.css > dest/css/dialog.min.css",
     "copy-files":"copyfiles icons/*.svg dest/css",
-    "build-all": "npm run build && npm run build-css",
+    "build-all": "npm run build && npm run build-css && npm run copy-files",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

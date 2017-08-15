@@ -1,0 +1,141 @@
+@import "util";
+$closeIcon:'icons/close.svg';
+$infoIcon:'icons/info.svg';
+$warnIcon:'icons/warn.svg';
+$errorIcon:'icons/error.svg';
+$infoBgColor:#8dd47a;
+$warnBgColor:#daf399;
+$errorBgColor:#e4cd8f;
+$infoBorderColor:#c5bf7f;
+$warnBorderColor:#e6df97;
+$errorBorderColor:#e4c582;
+$infoColor:#fff;
+$warnColor:#000;
+$errorColor:#f00;
+$infoDialogWidth:450px;
+$iconSize:60px;
+.h-dialog{
+  &.h-dialog-info{
+    $leftWidth:100px;
+    padding-left:$leftWidth;
+    @include keyframes(h-dialog-info-leave){
+      0%{
+        opacity: 1;
+      }
+      100%{
+        @include css(transform,scale(0) rotateX(90deg) skewX(-45deg));
+        opacity: 0;
+      }
+    }
+    @include keyframes(h-dialog-info-enter){
+      0%{
+        @include css(transform,scale(0) rotateX(90deg) skewX(-45deg));
+        opacity: 0;
+      }
+      100%{
+        opacity: 1;
+      }
+    }
+    padding-top:5px;
+    paddinb-bottom:5px;
+    position: fixed;
+    right:5px;
+    width:$infoDialogWidth;
+    border:1px solid #c5bf7f;
+    border-radius:.15em;
+    opacity:0;
+    z-index:9999;
+    min-height:$iconSize + 20;
+    @include css(transition,bottom .6s);
+    @include css(animation,h-dialog-info-leave 1s);
+    &.h-visible{
+      opacity:1;
+      @include css(animation,h-dialog-info-enter 1s);
+    }
+
+    .h-dialog-icon{
+      position: absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:$leftWidth;
+      align-items: center;
+      justify-content: center;
+      padding:5px 0;
+      .h-dialog-close{
+        position: absolute;
+        left:-10px;
+        top:-10px;
+        width:25px;
+        height:25px;
+        background-size: 100% 100%;
+        border-radius:50%;
+        background:{
+          image:url($closeIcon);
+          color:#c1fb89;
+        }
+        opacity:0;
+        cursor:pointer;
+      }
+      .h-dialog-image{
+        position: absolute;
+        top:50%;
+        left:50%;
+        margin-top:0 - $iconSize/2;
+        margin-left:0 - $iconSize/2;
+        width:$iconSize;
+        height:$iconSize;
+        background-size: 100% 100%;
+        border-radius:50%;
+      }
+    }
+    &:hover{
+      .h-dialog-icon{
+        .h-dialog-close{
+          transition:opacity .8s;
+          opacity:1;
+        }
+      }
+    }
+    &.h-info{
+      background-color: $infoBgColor;
+      border-color:$infoBorderColor;
+      color:$infoColor;
+      .h-dialog-icon{
+        .h-dialog-image{
+          background-image: url($infoIcon);
+        }
+      }
+    }
+    &.h-warn{
+      background-color: $warnBgColor;
+      border-color:$warnBorderColor;
+      color:$warnColor;
+      .h-dialog-icon{
+        .h-dialog-image{
+          background-image: url($warnIcon);
+        }
+      }
+    }
+    &.h-error{
+      background-color: $errorBgColor;
+      border-color:$errorBorderColor;
+      color:$errorColor;
+      .h-dialog-icon{
+        .h-dialog-image{
+          background-image: url($errorIcon);
+        }
+      }
+    }
+
+    .h-dialog-content{
+      position: relative;
+      width:100%;
+      word-wrap: break-word;
+      word-break: break-all;
+      white-space: normal;
+      padding:10px 0;
+      overflow:auto;
+    }
+  }
+}

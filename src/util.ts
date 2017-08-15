@@ -1,3 +1,7 @@
+export var nextFrame = window.requestAnimationFrame || window['webkitRequestAnimationFrame'] || window['mozRequestAnimationFram'] || function(executor){
+        return setTimeout(executor,1000/60);
+    };
+export var cancelFrame = window.cancelAnimationFrame || window['webkitCancelAnimationFrame'] || window['mozCancelAnimationFrame'] || clearTimeout;
 export namespace util{
     export var namespaces = {
         svg: 'http://www.w3.org/2000/svg',
@@ -100,6 +104,15 @@ export namespace util{
     export function parent(target:HTMLElement){
         return target.parentElement || target.parentNode;
     }
+    export function removeElement(target:HTMLElement){
+        if(isFunction(target.remove)){
+            return target.remove();
+        }
+        var p = parent(target);
+        if(p){
+            p.removeChild(target);
+        }
+    }
     export function isObject(value):boolean{
         return typeof value === 'object' && null != value;
     }
@@ -109,9 +122,13 @@ export namespace util{
     export function isEventSupport(eventType:String){
         return 'on' + eventType in document;
     };
+    var timeoutCache = {};
+    export function delayExecute(identifyName:String,fn){
+        if(timeoutCache[identifyName]){
+            cancelFrame(timeoutCache[identifyName]);
+        }
+        var timeout = nextFrame(fn);
+        timeoutCache[identifyName] = timeout;
+    }
 }
-export var nextFrame = window.requestAnimationFrame || window['webkitRequestAnimationFrame'] || window['mozRequestAnimationFram'] || function(executor){
-        return setTimeout(executor,1000/60);
-    };
-export var cancelFrame = window.cancelAnimationFrame || window['webkitCancelAnimationFrame'] || window['mozCancelAnimationFrame'] || clearTimeout;
 export default util;

@@ -2,18 +2,12 @@ import { DialogOption } from './interface';
 import { util } from './util';
 abstract class Dialog implements DialogOption{
     el:HTMLElement;
-    parent:HTMLElement;
     constructor(option:DialogOption){
-        var parent:HTMLElement = option.parent;
-        if(typeof parent === 'string'){
-            parent = <HTMLElement>document.querySelector(<String>parent);
-        }
-        this.parent = parent;
     }
     protected elementSize(el:HTMLElement){
         var size = {
-            width:el.clientWidth,
-            height:el.clientHeight
+            width:el.offsetWidth,
+            height:el.offsetHeight
         };
         return size;
     }

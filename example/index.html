@@ -6,19 +6,37 @@
     <link rel="stylesheet" href="../dest/css/dialog.css"/>
     <script src="../dest/js/dialog.js"></script>
     <script>
-        var index = 1;
-        function showDialog(){
+        var index = 1,timeout;
+        var text = '阿啊手动阀手动阀啊打发手动阀撒旦啊打发士大夫';
+        function randomText(){
+            var content = text;
+            var num = Math.random() * 10;
+            for(var i = 0;i < num;i++){
+                content += text;
+            }
+            return content;
+        }
+        function showDialog(type){
+            if(!type){
+                type = 'info';
+            }
+            timeout = parseInt(Math.random() * 15000);
+            var _timeout = timeout / 1000;
+            _timeout = _timeout.toFixed(1);
             var Dialog = HERE.UI.InfoDialog;
-            Dialog.show({
+            Dialog[type]({
                 parent:document.body,
-                content:'success ok' + index++,
+               /* maxHeight:'200px',*/
+                content:'success ok' + index++ + '--timeout:' + _timeout + 's' + '--content:' + randomText(),
                 autoRemove:true,
-                autoRemoveTime:Math.random() * 15000
+                autoRemoveTime:timeout
             });
         }
     </script>
 </head>
 <body>
-    <button onclick="showDialog()">show InfoDialog</button>
+    <button onclick="showDialog('info')">show InfoDialog : info</button>
+    <button onclick="showDialog('warn')">show InfoDialog : warn</button>
+    <button onclick="showDialog('error')">show InfoDialog : error</button>
 </body>
 </html>
