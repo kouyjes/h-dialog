@@ -5,6 +5,33 @@
     <title>Dialog Demo</title>
     <link rel="stylesheet" href="../dest/css/dialog.css"/>
     <script src="../dest/js/dialog.js"></script>
+    <style type="text/css">
+        html,body{
+            margin:0;
+            padding:0;
+            height:100%;
+            overflow:hidden;
+            background: -ms-linear-gradient(top, #fff,  #3f3dd0);
+            background:-moz-linear-gradient(top,#3f3dd0,#f6f6f8);
+            background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#3f3dd0), to(#fff))
+        }
+        button{
+            margin-left:20px;
+            display: block;
+            -webkit-appearance: none;
+            background: #83c1f7;
+            padding: 8px 10px;
+            outline: none;
+            box-shadow: none;
+            border: none;
+            cursor:pointer;
+            margin-top:20px;
+            width:200px;
+        }
+        button:active{
+            background-color:#7cb0de;
+        }
+    </style>
     <script>
         var index = 1,timeout;
         var text = '阿啊手动阀手动阀啊打发手动阀撒旦啊打发士大夫';
@@ -25,7 +52,6 @@
             _timeout = _timeout.toFixed(1);
             var Dialog = HERE.UI.InfoDialog;
             Dialog[type]({
-                parent:document.body,
                /* maxHeight:'200px',*/
                 content:'success ok' + index++ + '--timeout:' + _timeout + 's' + '--content:' + randomText(),
                 autoRemove:true,
