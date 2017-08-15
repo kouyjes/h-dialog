@@ -1,6 +1,8 @@
 ## Get Started
 ### Demo
+
 [Demo url](https://kouyjes.github.io/h-dialog/example/index.html)
+
 ### Interface
 ```javascript
     export interface DialogOption{
