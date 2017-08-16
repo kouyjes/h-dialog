@@ -1,6 +1,6 @@
 {
   "name": "h-dialog",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "info,warn,error,dialog,alert",
   "main": "index.js",
   "scripts": {

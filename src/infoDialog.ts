@@ -1,15 +1,15 @@
-import { Panel } from './panel';
-import { InfoDialogOption,InfoDialogType } from './interface';
-import { InfoPanel } from './infoPanel';
+import { InfoDialogOption,InfoDialogType,Align } from './interface';
+import { InfoWindow } from './infoWindow';
 import { util,nextFrame,cancelFrame } from './util';
 var infoDialogClass = {
     'info':'h-info',
     'warn':'h-warn',
     'error':'h-error'
 };
-class InfoDialog extends InfoPanel implements InfoDialogOption{
+class InfoDialog extends InfoWindow implements InfoDialogOption{
     type = InfoDialogType.INFO;
     content:String = '';
+    maxHeight = '';
     html = null;
     static show(option:InfoDialogOption,type = InfoDialogType.INFO){
         option.type = type;
@@ -28,19 +28,19 @@ class InfoDialog extends InfoPanel implements InfoDialogOption{
     }
     constructor(option:InfoDialogOption){
         super(option);
-        this.assignOption(option,['type','content']);
+        this.assignOption(option,['maxHeight','type','content']);
         this.assignOption(option,['html'],false);
     }
-    protected render(){
-        var result = super.render();
+    protected createWindow(){
+        super.createWindow();
         var panel = this.el;
         util.addClass(panel,'h-dialog-info');
-        util.addClass(panel,infoDialogClass[this.type]);
-        return result;
+        util.addClass(panel.panel,infoDialogClass[this.type]);
+        return panel;
     }
     protected initContentElements(){
 
-        var panel = this.el;
+        var panel = this.el.panel;
         var iconPanel = util.createElement('div');
         util.addClass(iconPanel,'h-dialog-icon');
         var image = util.createElement('div');

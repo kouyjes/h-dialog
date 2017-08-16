@@ -1,0 +1,57 @@
+@import "util";
+@import "window";
+@include keyframes(h-dialog-info-leave){
+  0%{
+    opacity: 1;
+  }
+  100%{
+    @include css(transform,scale(0) rotateX(90deg) skewX(-45deg));
+    opacity: 0;
+  }
+}
+@include keyframes(h-dialog-info-enter){
+  0%{
+    @include css(transform,scale(0) rotateX(90deg) skewX(-45deg));
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+$infoPanelWidth:450px;
+.h-window{
+  &.h-window-info{
+    position: fixed;
+    width:100%;
+    z-index:9999;
+    padding:10px;
+    @include css(pointer-events,none);
+    @include css(transition,bottom .6s);
+    @include css(transform,translateZ(0));
+    .h-panel{
+      @include css(animation,h-dialog-info-leave 1s);
+      @include css(pointer-events,all);
+      position: relative;
+      width:$infoPanelWidth;
+      border:1px solid #c5bf7f;
+      border-radius:.15em;
+      opacity:0;
+      &.h-align-left{
+        float:left;
+      }
+      &.h-align-right{
+        float:right;
+      }
+      &.h-align-center{
+        margin-left:auto;
+        margin-right:auto;
+      }
+    }
+    &.h-visible{
+      .h-panel{
+        opacity:1;
+        @include css(animation,h-dialog-info-enter 1s);
+      }
+    }
+  }
+}

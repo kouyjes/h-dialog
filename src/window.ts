@@ -1,8 +1,10 @@
 import { PanelOption } from './interface';
 import { util } from './util';
-abstract class Panel implements PanelOption{
+abstract class Window implements PanelOption{
     el:HTMLElement;
+    contentElements = [];
     constructor(option:PanelOption){
+        this.assignOption(option,['contentElements']);
     }
     protected elementSize(el:HTMLElement){
         var size = {
@@ -18,10 +20,18 @@ abstract class Panel implements PanelOption{
             }
         });
     }
-    protected createPanel(){
+    protected createWindow(){
+
+        var el = util.createElement('div');
+        util.addClass(el,'h-window');
+        util.addClass(el,'h-visible');
+
         var panel = util.createElement('div');
         util.addClass(panel,'h-panel');
-        return panel;
+        el.appendChild(panel);
+        el.panel = panel;
+
+        this.el = el;
     }
     protected onceExecute(fn:Function){
         var executed = false;
@@ -54,4 +64,4 @@ abstract class Panel implements PanelOption{
     abstract remove();
 }
 
-export { Panel };
+export { Window };

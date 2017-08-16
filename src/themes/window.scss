@@ -1,0 +1,6 @@
+@import "util";
+.h-window{
+  &,div{
+    @include css(box-sizing,border-box);
+  }
+}

@@ -1,5 +1,5 @@
 @import "util";
-@import "info-panel";
+@import "info-window";
 $closeIcon:'icons/close.svg';
 $infoIcon:'icons/info.svg';
 $warnIcon:'icons/warn.svg';
@@ -14,11 +14,54 @@ $infoColor:#fff;
 $warnColor:#000;
 $errorColor:#f00;
 $iconSize:60px;
-.h-panel{
+.h-window{
   &.h-dialog-info{
     $leftWidth:100px;
-    padding-left:$leftWidth;
-    min-height:$iconSize + 20;
+    .h-panel{
+      padding-left:$leftWidth;
+      min-height:$iconSize + 20;
+    }
+    .h-panel{
+      &.h-info{
+        background-color: $infoBgColor;
+        border-color:$infoBorderColor;
+        color:$infoColor;
+        .h-dialog-icon{
+          .h-dialog-image{
+            background-image: url($infoIcon);
+          }
+        }
+      }
+      &.h-warn{
+        background-color: $warnBgColor;
+        border-color:$warnBorderColor;
+        color:$warnColor;
+        .h-dialog-icon{
+          .h-dialog-image{
+            background-image: url($warnIcon);
+          }
+        }
+      }
+      &.h-error{
+        background-color: $errorBgColor;
+        border-color:$errorBorderColor;
+        color:$errorColor;
+        .h-dialog-icon{
+          .h-dialog-image{
+            background-image: url($errorIcon);
+          }
+        }
+      }
+
+      &:hover{
+        .h-dialog-icon{
+          .h-dialog-close{
+            transition:opacity .8s;
+            opacity:1;
+          }
+        }
+      }
+    }
     .h-dialog-icon{
       position: absolute;
       left:0;
@@ -55,45 +98,6 @@ $iconSize:60px;
         border-radius:50%;
       }
     }
-    &:hover{
-      .h-dialog-icon{
-        .h-dialog-close{
-          transition:opacity .8s;
-          opacity:1;
-        }
-      }
-    }
-    &.h-info{
-      background-color: $infoBgColor;
-      border-color:$infoBorderColor;
-      color:$infoColor;
-      .h-dialog-icon{
-        .h-dialog-image{
-          background-image: url($infoIcon);
-        }
-      }
-    }
-    &.h-warn{
-      background-color: $warnBgColor;
-      border-color:$warnBorderColor;
-      color:$warnColor;
-      .h-dialog-icon{
-        .h-dialog-image{
-          background-image: url($warnIcon);
-        }
-      }
-    }
-    &.h-error{
-      background-color: $errorBgColor;
-      border-color:$errorBorderColor;
-      color:$errorColor;
-      .h-dialog-icon{
-        .h-dialog-image{
-          background-image: url($errorIcon);
-        }
-      }
-    }
-
     .h-dialog-content{
       position: relative;
       width:100%;

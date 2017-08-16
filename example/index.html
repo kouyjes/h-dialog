@@ -31,10 +31,17 @@
         table{
             width:100%;
             height:200px;
-            background-color:aliceblue;
+            border-collapse: collapse;
         }
         thead{
             background-color:#c5bf7f;
+            color: #fff;
+        }
+        th,td{
+            padding:4px;
+        }
+        tr:nth-child(odd) td{
+            background-color:#83c1f7;
         }
         [type="text/template"]{
             display:none;
@@ -44,42 +51,58 @@
         }
     </style>
     <script>
-        var index = 1,timeout;
-        var text = '阿啊手动阀手动阀啊打发手动阀撒旦啊打发士大夫';
+        var index = 1,timeout,count = 0;
+        var text = ['曾经沧海难为水，除却巫山不是云。 —— 元稹《离思五首·其四》'];
+        text.push('夜来风雨声，花落知多少。 —— 孟浩然《春晓》');
+        text.push('行路难！行路难！多歧路，今安在？长风破浪会有时，直挂云帆济沧海。 —— 李白《行路难·其一》');
+        text.push('相见时难别亦难，东风无力百花残。 —— 李商隐《无题·相见时难别亦难》');
+        text.push('问渠哪得清如许？为有源头活水来。 —— 朱熹《活水亭观书有感二首·其一》');
+        function randomColor(){
+            var r = parseInt(255 * Math.random()),
+                    g = parseInt(255 * Math.random()),
+                    b = parseInt(255 * Math.random());
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
         function randomText(){
-            var content = text;
-            var num = Math.random() * 10;
-            for(var i = 0;i < num;i++){
-                content += text;
-            }
-            return content;
+            return text[count++ % text.length];
         }
         function showPanel(){
-            var InfoPanel = HERE.UI.InfoPanel;
+            var InfoWindow = HERE.UI.InfoWindow;
+            var tds = Array.prototype.slice.call(document.querySelectorAll('.table-row'));
+            tds.forEach(function (td) {
+                td.innerText = randomText();
+            });
             var template = document.querySelector('#panelTemplate').innerHTML;
-            InfoPanel.show({
-             autoRemove:true,
-             autoRemoveTime:5000,
-             contentElements:[template]
-             });
+            InfoWindow.show({
+                        autoRemove:true,
+                        autoRemoveTime:5000,
+                        align:'right',
+                        css:{
+                            backgroundColor:randomColor()
+                        },
+                        contentElements:[template]});
         }
         function showDialog(type){
             if(!type){
                 type = 'info';
             }
 
-            var _timeout = timeout / 1000;
-            _timeout = _timeout.toFixed(1);
-            var content = '<div style="color:red">text:</div>success ok' + index++ + '--timeout:' + _timeout + 's' + '--content:' + randomText();
+            timeout = parseInt(Math.random() * 15000);
+            timeout = Math.max(3000,timeout);
+            var content = randomText();
             var html = document.createElement('div');
             html.innerHTML = content;
-            timeout = parseInt(Math.random() * 15000);
+
 
             var Dialog = HERE.UI.InfoDialog;
             Dialog[type]({
                 maxHeight:'200px',
-                html:html,
+                content:content,
                 autoRemove:true,
+                css:{
+                    backgroundColor:randomColor()
+                },
+                align:'center',
                 autoRemoveTime:timeout
             });
         }
@@ -98,9 +121,12 @@
                 <th>任务</th>
             </thead>
             <tbody>
-                <td>2017-05-08</td>
-                <td>北京</td>
-                <td>未知</td>
+                <tr>
+                    <td class="table-row" colspan="3"></td>
+                </tr>
+                <tr>
+                    <td class="table-row" colspan="3"></td>
+                </tr>
             </tbody>
         </table>
     </div>
