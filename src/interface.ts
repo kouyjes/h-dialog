@@ -1,13 +1,17 @@
-export interface DialogOption{
+export interface PanelOption{
     el:HTMLElement;
 }
-export interface InfoDialogOption extends DialogOption{
-    type?:InfoDialogType;
-    content:String;
+export interface InfoPanelOption extends PanelOption{
     autoRemove:boolean;
     autoRemoveTime:number;
     width:String;
     maxHeight:String;
+    contentElements?:any[];
+}
+export interface InfoDialogOption extends InfoPanelOption{
+    type?:InfoDialogType;
+    content:String;
+    html?:any;
 }
 export enum InfoDialogType{
     INFO = 'info',

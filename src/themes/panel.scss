@@ -1,0 +1,4 @@
+@import "util";
+.h-panel{
+  @include css(box-sizing,border-box);
+}

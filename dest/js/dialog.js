@@ -173,31 +173,32 @@ var util;
     util.delayExecute = delayExecute;
 })(util || (util = {}));
 
-var Dialog = (function () {
-    function Dialog(option) {
+var Panel = (function () {
+    function Panel(option) {
     }
-    Dialog.prototype.elementSize = function (el) {
+    Panel.prototype.elementSize = function (el) {
         var size = {
             width: el.offsetWidth,
             height: el.offsetHeight
         };
         return size;
     };
-    Dialog.prototype.assignOption = function (option, keys) {
+    Panel.prototype.assignOption = function (option, keys, matchType) {
         var _this = this;
         if (keys === void 0) { keys = []; }
+        if (matchType === void 0) { matchType = true; }
         keys.forEach(function (key) {
-            if (typeof _this[key] === typeof option[key]) {
+            if (!matchType || typeof _this[key] === typeof option[key]) {
                 _this[key] = option[key];
             }
         });
     };
-    Dialog.prototype.createPanel = function () {
+    Panel.prototype.createPanel = function () {
         var panel = util.createElement('div');
-        util.addClass(panel, 'h-dialog');
+        util.addClass(panel, 'h-panel');
         return panel;
     };
-    Dialog.prototype.onceExecute = function (fn) {
+    Panel.prototype.onceExecute = function (fn) {
         var executed = false;
         var _fn = function () {
             if (executed) {
@@ -208,8 +209,162 @@ var Dialog = (function () {
         };
         return _fn;
     };
-    return Dialog;
+    Panel.prototype.parseNode = function (text) {
+        if (typeof text === 'object' && this.isDomNode(text)) {
+            return [text];
+        }
+        else if (typeof text === 'string') {
+            var div = util.createElement('div');
+            div.innerHTML = text;
+            return Array.prototype.slice.call(div.childNodes);
+        }
+        throw new Error('invalid data !');
+    };
+    Panel.prototype.isDomNode = function (object) {
+        if (typeof object !== 'object') {
+            return false;
+        }
+        return typeof object.nodeType !== void 0;
+    };
+    return Panel;
 }());
+
+var prefixes = ["webkit", "moz", "MS", "o"];
+var InfoPanel = (function (_super) {
+    __extends(InfoPanel, _super);
+    function InfoPanel(option) {
+        _super.call(this, option);
+        this.autoRemove = true;
+        this.autoRemoveTime = 2000;
+        this.width = '';
+        this.maxHeight = '';
+        this._bottom = 0;
+        this.contentElements = [];
+        this.assignOption(option, ['width', 'maxHeight', 'autoRemove', 'autoRemoveTime', 'contentElements']);
+    }
+    InfoPanel.show = function (option) {
+        var panel = new InfoPanel(option);
+        panel.render();
+        return panel;
+    };
+    InfoPanel.triggerRemoveEvent = function () {
+        util.delayExecute('triggerRemoveInfoPanelEvent', function () {
+            var bottom = InfoPanel.startBottom, size;
+            InfoPanel.instances.forEach(function (instance) {
+                instance.updateBottom(bottom);
+                size = instance.elementSize(instance.el);
+                bottom += size.height + InfoPanel.margin;
+            });
+        });
+    };
+    InfoPanel.prototype.render = function () {
+        if (InfoPanel.instances.indexOf(this) >= 0) {
+            return;
+        }
+        var panel = this.createPanel();
+        util.addClass(panel, 'h-panel-info');
+        util.addClass(panel, 'h-visible');
+        if (this.width) {
+            panel.style.width = this.width;
+        }
+        this.el = panel;
+        this.initContentElements();
+        if (this.autoRemove) {
+            this.triggerAutoRemove();
+        }
+        InfoPanel.instances.push(this);
+        this.updatePosition();
+        document.body.appendChild(panel);
+    };
+    InfoPanel.prototype.initContentElements = function () {
+        var _this = this;
+        var panel = this.el;
+        this.contentElements.forEach(function (element) {
+            var nodes = _this.parseNode(element);
+            nodes.forEach(function (node) {
+                panel.appendChild(node);
+            });
+        });
+    };
+    InfoPanel.prototype.updatePosition = function () {
+        var _this = this;
+        var instances = InfoPanel.instances;
+        var index = instances.length - 1;
+        var bottom = InfoPanel.startBottom, size;
+        for (var i = 0; i < index; i++) {
+            size = this.elementSize(instances[i].el);
+            bottom += size.height + InfoPanel.margin;
+        }
+        this.updateBottom(bottom);
+        util.delayExecute('checkInfoPanelOverflow', function () {
+            _this.checkOverflow();
+        });
+    };
+    InfoPanel.prototype.checkOverflow = function () {
+        if (InfoPanel.instances.length === 0) {
+            return;
+        }
+        var instances = InfoPanel.instances;
+        var clientHeight = window.innerHeight, size = this.elementSize(this.el);
+        var removedInstances = [];
+        var leftHeight = clientHeight - this._bottom;
+        var i, _height = leftHeight;
+        if (this._bottom + size.height >= clientHeight) {
+            for (i = 0; i < instances.length; i++) {
+                _height += this.elementSize(instances[i].el).height;
+                removedInstances.push(instances[i]);
+                if (_height >= size.height) {
+                    break;
+                }
+            }
+            instances.splice(0, i + 1);
+            InfoPanel.overflowRemove(removedInstances);
+        }
+    };
+    InfoPanel.prototype.updateBottom = function (bottom) {
+        if (bottom === void 0) { bottom = 0; }
+        this.el.style.bottom = bottom + 'px';
+        this._bottom = bottom;
+    };
+    InfoPanel.prototype.triggerAutoRemove = function () {
+        var _this = this;
+        var onceExecuteFn = this.onceExecute(function () {
+            _this.remove();
+        });
+        setTimeout(function () {
+            util.removeClass(_this.el, 'h-visible');
+            setTimeout(onceExecuteFn, 1300);
+            var eventType = 'AnimationEnd';
+            prefixes.forEach(function (prefix) {
+                _this.el.addEventListener(prefix + eventType, onceExecuteFn);
+            });
+        }, this.autoRemoveTime);
+    };
+    InfoPanel.overflowRemove = function (instances) {
+        InfoPanel.instances = InfoPanel.instances.filter(function (_instance) {
+            return instances.indexOf(_instance) === -1;
+        });
+        instances.forEach(function (instance) {
+            util.removeClass(instance.el, 'h-visible');
+            setTimeout(function () {
+                util.removeElement(instance.el);
+            }, 800);
+        });
+        InfoPanel.triggerRemoveEvent();
+    };
+    InfoPanel.prototype.remove = function () {
+        var index = InfoPanel.instances.indexOf(this);
+        if (index >= 0) {
+            InfoPanel.instances.splice(index, 1);
+        }
+        util.removeElement(this.el);
+        InfoPanel.triggerRemoveEvent();
+    };
+    InfoPanel.startBottom = 5;
+    InfoPanel.instances = [];
+    InfoPanel.margin = 10;
+    return InfoPanel;
+}(Panel));
 
 var InfoDialogType;
 (function (InfoDialogType) {
@@ -218,7 +373,6 @@ var InfoDialogType;
     InfoDialogType[InfoDialogType["ERROR"] = 'error'] = "ERROR";
 })(InfoDialogType || (InfoDialogType = {}));
 
-var prefixes = ["webkit", "moz", "MS", "o"];
 var infoDialogClass = {
     'info': 'h-info',
     'warn': 'h-warn',
@@ -230,12 +384,9 @@ var InfoDialog = (function (_super) {
         _super.call(this, option);
         this.type = InfoDialogType.INFO;
         this.content = '';
-        this.autoRemove = true;
-        this.autoRemoveTime = 2000;
-        this.width = '';
-        this.maxHeight = '';
-        this._bottom = 0;
-        this.assignOption(option, ['type', 'width', 'maxHeight', 'content', 'autoRemove', 'autoRemoveTime']);
+        this.html = null;
+        this.assignOption(option, ['type', 'content']);
+        this.assignOption(option, ['html'], false);
     }
     InfoDialog.show = function (option, type) {
         if (type === void 0) { type = InfoDialogType.INFO; }
@@ -253,27 +404,15 @@ var InfoDialog = (function (_super) {
     InfoDialog.error = function (option) {
         return InfoDialog.show(option, InfoDialogType.ERROR);
     };
-    InfoDialog.triggerRemoveEvent = function () {
-        util.delayExecute('triggerRemoveInfoDialogEvent', function () {
-            var bottom = InfoDialog.startBottom, size;
-            InfoDialog.instances.forEach(function (instance) {
-                instance.updateBottom(bottom);
-                size = instance.elementSize(instance.el);
-                bottom += size.height + InfoDialog.margin;
-            });
-        });
-    };
     InfoDialog.prototype.render = function () {
-        if (InfoDialog.instances.indexOf(this) >= 0) {
-            return;
-        }
-        var panel = this.createPanel();
+        var result = _super.prototype.render.call(this);
+        var panel = this.el;
         util.addClass(panel, 'h-dialog-info');
-        util.addClass(panel, 'h-visible');
         util.addClass(panel, infoDialogClass[this.type]);
-        if (this.width) {
-            panel.style.width = this.width;
-        }
+        return result;
+    };
+    InfoDialog.prototype.initContentElements = function () {
+        var panel = this.el;
         var iconPanel = util.createElement('div');
         util.addClass(iconPanel, 'h-dialog-icon');
         var image = util.createElement('div');
@@ -285,106 +424,31 @@ var InfoDialog = (function (_super) {
         this.bindCloseEvent(closeIcon);
         var contentPanel = util.createElement('div');
         util.addClass(contentPanel, 'h-dialog-content');
-        var textNode = document.createTextNode(this.content);
-        contentPanel.appendChild(textNode);
+        if (this.html) {
+            this.parseNode(this.html).forEach(function (node) {
+                contentPanel.appendChild(node);
+            });
+        }
+        else {
+            var textNode = document.createTextNode(this.content);
+            contentPanel.appendChild(textNode);
+        }
         if (this.maxHeight) {
             contentPanel.style.maxHeight = this.maxHeight;
         }
         panel.appendChild(iconPanel);
         panel.appendChild(contentPanel);
-        this.el = panel;
-        if (this.autoRemove) {
-            this.triggerAutoRemove();
-        }
-        InfoDialog.instances.push(this);
-        this.updatePosition();
-        document.body.appendChild(panel);
     };
-    InfoDialog.prototype.bindCloseEvent = function (colseEl) {
+    InfoDialog.prototype.bindCloseEvent = function (el) {
         var _this = this;
-        colseEl.addEventListener('click', function () {
+        el.addEventListener('click', function () {
             _this.remove();
         });
     };
-    InfoDialog.prototype.updatePosition = function () {
-        var _this = this;
-        var instances = InfoDialog.instances;
-        var index = instances.length - 1;
-        var bottom = InfoDialog.startBottom, size;
-        for (var i = 0; i < index; i++) {
-            size = this.elementSize(instances[i].el);
-            bottom += size.height + InfoDialog.margin;
-        }
-        this.updateBottom(bottom);
-        util.delayExecute('checkInfoDialogOverflow', function () {
-            _this.checkOverflow();
-        });
-    };
-    InfoDialog.prototype.checkOverflow = function () {
-        if (InfoDialog.instances.length === 0) {
-            return;
-        }
-        var instances = InfoDialog.instances;
-        var clientHeight = window.innerHeight, size = this.elementSize(this.el);
-        var i, _height = 0;
-        var removedInstances = [];
-        if (this._bottom + size.height + InfoDialog.margin >= clientHeight) {
-            for (i = 0; i < instances.length; i++) {
-                _height += this.elementSize(instances[i].el).height;
-                removedInstances.push(instances[i]);
-                if (_height >= size.height) {
-                    break;
-                }
-            }
-            instances.splice(0, i + 1);
-            InfoDialog.overflowRemove(removedInstances);
-        }
-    };
-    InfoDialog.prototype.updateBottom = function (bottom) {
-        if (bottom === void 0) { bottom = 0; }
-        this.el.style.bottom = bottom + 'px';
-        this._bottom = bottom;
-    };
-    InfoDialog.prototype.triggerAutoRemove = function () {
-        var _this = this;
-        var onceExecuteFn = this.onceExecute(function () {
-            _this.remove();
-        });
-        setTimeout(function () {
-            util.removeClass(_this.el, 'h-visible');
-            setTimeout(onceExecuteFn, 1300);
-            var eventType = 'AnimationEnd';
-            prefixes.forEach(function (prefix) {
-                _this.el.addEventListener(prefix + eventType, onceExecuteFn);
-            });
-        }, this.autoRemoveTime);
-    };
-    InfoDialog.overflowRemove = function (instances) {
-        InfoDialog.instances = InfoDialog.instances.filter(function (_instance) {
-            return instances.indexOf(_instance) === -1;
-        });
-        instances.forEach(function (instance) {
-            util.removeClass(instance.el, 'h-visible');
-            setTimeout(function () {
-                util.removeElement(instance.el);
-            }, 800);
-        });
-        InfoDialog.triggerRemoveEvent();
-    };
-    InfoDialog.prototype.remove = function () {
-        var index = InfoDialog.instances.indexOf(this);
-        if (index >= 0) {
-            InfoDialog.instances.splice(index, 1);
-        }
-        util.removeElement(this.el);
-        InfoDialog.triggerRemoveEvent();
-    };
-    InfoDialog.startBottom = 5;
-    InfoDialog.instances = [];
-    InfoDialog.margin = 10;
     return InfoDialog;
-}(Dialog));
+}(InfoPanel));
 
+exports.InfoPanel = InfoPanel;
 exports.InfoDialog = InfoDialog;
 
 Object.defineProperty(exports, '__esModule', { value: true });

@@ -1,4 +1,5 @@
 @import "util";
+@import "info-panel";
 $closeIcon:'icons/close.svg';
 $infoIcon:'icons/info.svg';
 $warnIcon:'icons/warn.svg';
@@ -12,47 +13,12 @@ $errorBorderColor:#e4c582;
 $infoColor:#fff;
 $warnColor:#000;
 $errorColor:#f00;
-$infoDialogWidth:450px;
 $iconSize:60px;
-.h-dialog{
+.h-panel{
   &.h-dialog-info{
     $leftWidth:100px;
     padding-left:$leftWidth;
-    @include keyframes(h-dialog-info-leave){
-      0%{
-        opacity: 1;
-      }
-      100%{
-        @include css(transform,scale(0) rotateX(90deg) skewX(-45deg));
-        opacity: 0;
-      }
-    }
-    @include keyframes(h-dialog-info-enter){
-      0%{
-        @include css(transform,scale(0) rotateX(90deg) skewX(-45deg));
-        opacity: 0;
-      }
-      100%{
-        opacity: 1;
-      }
-    }
-    padding-top:5px;
-    paddinb-bottom:5px;
-    position: fixed;
-    right:5px;
-    width:$infoDialogWidth;
-    border:1px solid #c5bf7f;
-    border-radius:.15em;
-    opacity:0;
-    z-index:9999;
     min-height:$iconSize + 20;
-    @include css(transition,bottom .6s);
-    @include css(animation,h-dialog-info-leave 1s);
-    &.h-visible{
-      opacity:1;
-      @include css(animation,h-dialog-info-enter 1s);
-    }
-
     .h-dialog-icon{
       position: absolute;
       left:0;

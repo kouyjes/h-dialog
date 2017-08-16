@@ -5,24 +5,38 @@
 
 ### Interface
 ```javascript
-    export interface DialogOption{
-        el:HTMLElement;
-    }
-    interface InfoDialogOption extends DialogOption{
-        type?:InfoDialogType;
-        content:String;
-        autoRemove:boolean;
-        autoRemoveTime:number;
-        width:String;
-        maxHeight:String;
-    }
-    enum InfoDialogType{
-        INFO = 'info',
-        WARN = 'warn',
-        ERROR = 'error'
-    }
+   interface PanelOption{
+       el:HTMLElement;
+   }
+   interface InfoPanelOption extends PanelOption{
+       autoRemove:boolean;
+       autoRemoveTime:number;
+       width:String;
+       maxHeight:String;
+       contentElements?:any[];
+   }
+   interface InfoDialogOption extends InfoPanelOption{
+       type?:InfoDialogType;
+       content:String;
+       html?:any;
+   }
+   enum InfoDialogType{
+       INFO = 'info',
+       WARN = 'warn',
+       ERROR = 'error'
+   }
 ```
-### Example
+### InfoPanel Example
+```javascript
+    var InfoPanel = HERE.UI.InfoPanel;
+    var template = '<div>text</div>';
+    InfoPanel.show({
+         autoRemove:true,
+         autoRemoveTime:5000,
+         contentElements:[template]
+     });
+```
+### InfoDialog Example
 ```javascript
     var Dialog = HERE.UI.InfoDialog;
     Dialog.info({

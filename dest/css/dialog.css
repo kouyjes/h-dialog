@@ -1,12 +1,11 @@
-.h-dialog {
+.h-panel {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box; }
 
-.h-dialog.h-dialog-info {
-  padding-left: 100px;
+.h-panel.h-panel-info {
   padding-top: 5px;
   paddinb-bottom: 5px;
   position: fixed;
@@ -16,7 +15,6 @@
   border-radius: .15em;
   opacity: 0;
   z-index: 9999;
-  min-height: 80px;
   transition: bottom 0.6s;
   -webkit-transition: bottom 0.6s;
   -moz-transition: bottom 0.6s;
@@ -127,14 +125,18 @@
     opacity: 0; }
   100% {
     opacity: 1; } }
-  .h-dialog.h-dialog-info.h-visible {
+  .h-panel.h-panel-info.h-visible {
     opacity: 1;
     animation: h-dialog-info-enter 1s;
     -webkit-animation: h-dialog-info-enter 1s;
     -moz-animation: h-dialog-info-enter 1s;
     -ms-animation: h-dialog-info-enter 1s;
     -o-animation: h-dialog-info-enter 1s; }
-  .h-dialog.h-dialog-info .h-dialog-icon {
+
+.h-panel.h-dialog-info {
+  padding-left: 100px;
+  min-height: 80px; }
+  .h-panel.h-dialog-info .h-dialog-icon {
     position: absolute;
     left: 0;
     top: 0;
@@ -143,7 +145,7 @@
     align-items: center;
     justify-content: center;
     padding: 5px 0; }
-    .h-dialog.h-dialog-info .h-dialog-icon .h-dialog-close {
+    .h-panel.h-dialog-info .h-dialog-icon .h-dialog-close {
       position: absolute;
       left: -10px;
       top: -10px;
@@ -155,7 +157,7 @@
       background-color: #c1fb89;
       opacity: 0;
       cursor: pointer; }
-    .h-dialog.h-dialog-info .h-dialog-icon .h-dialog-image {
+    .h-panel.h-dialog-info .h-dialog-icon .h-dialog-image {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -165,28 +167,28 @@
       height: 60px;
       background-size: 100% 100%;
       border-radius: 50%; }
-  .h-dialog.h-dialog-info:hover .h-dialog-icon .h-dialog-close {
+  .h-panel.h-dialog-info:hover .h-dialog-icon .h-dialog-close {
     transition: opacity .8s;
     opacity: 1; }
-  .h-dialog.h-dialog-info.h-info {
+  .h-panel.h-dialog-info.h-info {
     background-color: #8dd47a;
     border-color: #c5bf7f;
     color: #fff; }
-    .h-dialog.h-dialog-info.h-info .h-dialog-icon .h-dialog-image {
+    .h-panel.h-dialog-info.h-info .h-dialog-icon .h-dialog-image {
       background-image: url("icons/info.svg"); }
-  .h-dialog.h-dialog-info.h-warn {
+  .h-panel.h-dialog-info.h-warn {
     background-color: #daf399;
     border-color: #e6df97;
     color: #000; }
-    .h-dialog.h-dialog-info.h-warn .h-dialog-icon .h-dialog-image {
+    .h-panel.h-dialog-info.h-warn .h-dialog-icon .h-dialog-image {
       background-image: url("icons/warn.svg"); }
-  .h-dialog.h-dialog-info.h-error {
+  .h-panel.h-dialog-info.h-error {
     background-color: #e4cd8f;
     border-color: #e4c582;
     color: #f00; }
-    .h-dialog.h-dialog-info.h-error .h-dialog-icon .h-dialog-image {
+    .h-panel.h-dialog-info.h-error .h-dialog-icon .h-dialog-image {
       background-image: url("icons/error.svg"); }
-  .h-dialog.h-dialog-info .h-dialog-content {
+  .h-panel.h-dialog-info .h-dialog-content {
     position: relative;
     width: 100%;
     word-wrap: break-word;
