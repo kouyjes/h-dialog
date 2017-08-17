@@ -68,7 +68,7 @@
         }
         function showPanel(){
             var InfoWindow = HERE.UI.InfoWindow;
-            var tds = Array.prototype.slice.call(document.querySelectorAll('.table-row'));
+            var tds = Array.prototype.slice.call(document.querySelectorAll('#panelTemplate .table-row'));
             tds.forEach(function (td) {
                 td.innerText = randomText();
             });
@@ -102,7 +102,7 @@
                 css:{
                     backgroundColor:randomColor()
                 },
-                align:'center',
+                align:'right',
                 autoRemoveTime:timeout
             });
         }
