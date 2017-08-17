@@ -173,10 +173,12 @@ var util;
     util.delayExecute = delayExecute;
 })(util || (util = {}));
 
+var windowId = 1;
 var Window = (function () {
     function Window(option) {
         this.contentElements = [];
         this.assignOption(option, ['contentElements']);
+        this.id = windowId++;
     }
     Window.prototype.elementSize = function (el) {
         var size = {
@@ -277,7 +279,7 @@ var InfoWindow = (function (_super) {
     };
     InfoWindow.triggerRemoveEvent = function (align) {
         if (align === void 0) { align = Align.RIGHT; }
-        util.delayExecute('triggerRemoveInfoPanelEvent', function () {
+        util.delayExecute('triggerRemoveInfoPanelEvent_' + align, function () {
             var bottom = InfoWindow.startBottom, size;
             InfoWindow.instances[align].forEach(function (instance) {
                 instance.updateBottom(bottom);
@@ -337,7 +339,7 @@ var InfoWindow = (function (_super) {
             bottom += size.height;
         }
         this.updateBottom(bottom);
-        util.delayExecute('checkInfoPanelOverflow', function () {
+        util.delayExecute('checkInfoPanelOverflow_' + this.id, function () {
             _this.checkOverflow();
         });
     };

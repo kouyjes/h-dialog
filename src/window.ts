@@ -1,10 +1,13 @@
 import { PanelOption } from './interface';
 import { util } from './util';
+var windowId = 1;
 abstract class Window implements PanelOption{
+    id:number;
     el:HTMLElement;
     contentElements = [];
     constructor(option:PanelOption){
         this.assignOption(option,['contentElements']);
+        this.id = windowId++;
     }
     protected elementSize(el:HTMLElement){
         var size = {

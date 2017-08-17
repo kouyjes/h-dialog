@@ -25,7 +25,7 @@ class InfoWindow extends Window implements InfoPanelOption{
         return panel;
     }
     static triggerRemoveEvent(align = Align.RIGHT){
-        util.delayExecute('triggerRemoveInfoPanelEvent', function () {
+        util.delayExecute('triggerRemoveInfoPanelEvent_' + align, function () {
             var bottom = InfoWindow.startBottom,size;
             InfoWindow.instances[align].forEach((instance) => {
                 instance.updateBottom(bottom);
@@ -97,7 +97,7 @@ class InfoWindow extends Window implements InfoPanelOption{
         }
         this.updateBottom(bottom);
 
-        util.delayExecute('checkInfoPanelOverflow',() => {
+        util.delayExecute('checkInfoPanelOverflow_' + this.id,() => {
             this.checkOverflow();
         });
     }
