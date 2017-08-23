@@ -233,7 +233,7 @@ var Window = (function () {
         if (typeof object !== 'object') {
             return false;
         }
-        return typeof object.nodeType !== void 0;
+        return object.nodeType !== void 0 && object.tagName !== void 0;
     };
     return Window;
 }());
