@@ -9,6 +9,10 @@ var alignClass = {
 };
 class InfoWindow extends Window implements InfoPanelOption{
     autoRemove = true;
+    delayRemove:Function = null;
+    mouseState = {
+        over:false
+    };
     autoRemoveTime = 2000;
     css = {};
     _bottom = 0;
@@ -131,16 +135,26 @@ class InfoWindow extends Window implements InfoPanelOption{
         this._bottom = bottom;
     }
     private triggerAutoRemove(){
+
+        this.bindMouseOverEvent();
+
         var onceExecuteFn = this.onceExecute(() => {
             this.remove();
         });
-        setTimeout(() => {
+        var timeoutRemoveFn = () => {
             util.removeClass(this.el,'h-visible');
             setTimeout(onceExecuteFn,1300);
             var eventType = 'AnimationEnd';
             prefixes.forEach((prefix) => {
                 this.el.addEventListener(prefix + eventType,onceExecuteFn);
             });
+        };
+        setTimeout(() => {
+            if(this.mouseState.over){
+                this.delayRemove = timeoutRemoveFn;
+                return;
+            }
+            timeoutRemoveFn();
         },this.autoRemoveTime);
     }
     static overflowRemove(removeInstances:InfoWindow[],align = Align.RIGHT){
@@ -164,6 +178,29 @@ class InfoWindow extends Window implements InfoPanelOption{
         }
         util.removeElement(this.el);
         InfoWindow.triggerRemoveEvent(this.align);
+    }
+    bindMouseOverEvent(){
+        if(!this.el){
+            return;
+        }
+        var mLeaveTimeout;
+        this.el.addEventListener('mouseenter',() => {
+            this.mouseState.over = true;
+            if(mLeaveTimeout){
+                clearTimeout(mLeaveTimeout);
+                mLeaveTimeout = 0;
+            }
+        });
+
+        this.el.addEventListener('mouseleave',() => {
+            this.mouseState.over = false;
+            mLeaveTimeout = setTimeout(() => {
+                if(this.delayRemove){
+                    this.delayRemove();
+                    this.delayRemove = null;
+                }
+            },1000);
+        })
     }
 }
 

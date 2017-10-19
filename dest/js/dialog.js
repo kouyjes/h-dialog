@@ -263,6 +263,10 @@ var InfoWindow = (function (_super) {
     function InfoWindow(option) {
         _super.call(this, option);
         this.autoRemove = true;
+        this.delayRemove = null;
+        this.mouseState = {
+            over: false
+        };
         this.autoRemoveTime = 2000;
         this.css = {};
         this._bottom = 0;
@@ -371,16 +375,24 @@ var InfoWindow = (function (_super) {
     };
     InfoWindow.prototype.triggerAutoRemove = function () {
         var _this = this;
+        this.bindMouseOverEvent();
         var onceExecuteFn = this.onceExecute(function () {
             _this.remove();
         });
-        setTimeout(function () {
+        var timeoutRemoveFn = function () {
             util.removeClass(_this.el, 'h-visible');
             setTimeout(onceExecuteFn, 1300);
             var eventType = 'AnimationEnd';
             prefixes.forEach(function (prefix) {
                 _this.el.addEventListener(prefix + eventType, onceExecuteFn);
             });
+        };
+        setTimeout(function () {
+            if (_this.mouseState.over) {
+                _this.delayRemove = timeoutRemoveFn;
+                return;
+            }
+            timeoutRemoveFn();
         }, this.autoRemoveTime);
     };
     InfoWindow.overflowRemove = function (removeInstances, align) {
@@ -405,6 +417,29 @@ var InfoWindow = (function (_super) {
         }
         util.removeElement(this.el);
         InfoWindow.triggerRemoveEvent(this.align);
+    };
+    InfoWindow.prototype.bindMouseOverEvent = function () {
+        var _this = this;
+        if (!this.el) {
+            return;
+        }
+        var mLeaveTimeout;
+        this.el.addEventListener('mouseenter', function () {
+            _this.mouseState.over = true;
+            if (mLeaveTimeout) {
+                clearTimeout(mLeaveTimeout);
+                mLeaveTimeout = 0;
+            }
+        });
+        this.el.addEventListener('mouseleave', function () {
+            _this.mouseState.over = false;
+            mLeaveTimeout = setTimeout(function () {
+                if (_this.delayRemove) {
+                    _this.delayRemove();
+                    _this.delayRemove = null;
+                }
+            }, 1000);
+        });
     };
     InfoWindow.startBottom = 5;
     InfoWindow.instances = {
